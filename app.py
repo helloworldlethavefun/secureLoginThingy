@@ -1,8 +1,9 @@
 # import needed modules
 from flask import Flask, render_template, redirect, url_for, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
-from database import db, User
+from database import db, User, addusertodb
 from flask_login import LoginManager
+from form import LoginForm, RegisterForm
 
 # initilize flask, login manager and sqlalchmey
 app = Flask(__name__)
@@ -21,13 +22,14 @@ def load_user(user_id):
 def index():
     return render_template('index.html')
 
+@app.route('/login', methods=('POST', 'GET'))
+def login():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+
 # if posted to request to view the posted info then store in a variable
 @app.route('/register', methods=('POST', 'GET'))
 def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        return render_template('index.html')
-    else:
         return render_template('register.html')
 
 # as long as it's not imported as a module
