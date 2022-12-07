@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request, session
+from database import *
 
 app = Flask(__name__)
 
@@ -9,8 +10,9 @@ def index():
 @app.route('/register', methods=('POST', 'GET'))
 def register():
     if request.method == 'POST':
-        
-        return render_template('login.html')
+        email = request.form['email']
+        adduser(email)
+        return render_template('index.html')
     else:
         return render_template('register.html')
 
