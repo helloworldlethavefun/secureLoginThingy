@@ -1,17 +1,12 @@
-from sqlalchemy import *
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
-engine = create_engine('sqlite:///users.db')
+db = SQLAlchemy()
 
-metadata = MetaData()
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    email = db.Column(db.String(30), nullable=False)
+    password = db.Column(db.String(80), nullable=False)
 
-User = Table('User', metadata,
-           Column('Id', Integer(),primary_key=True),
-           Column('Email', String(255), nullable=False),
-           Column('Password', String(255), nullable=False)
-            )
-
-metadata.create_all(engine)
-
-def adduser(email):
-    query = insert(User).values(Id=1, Email=email, Password='password123')
-    Result = engine.execute(query)
+    def is_authenticated(self):
+        return super().is_authenticated
