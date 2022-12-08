@@ -8,5 +8,15 @@
 </head>
 <body>
     <h1>Sign up!</h1>
+
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        {{ form.email }}
+        {{ form.password }}
+        {{ form.submit }}
+    </form>
+
+    <a href="{{url_for('login')}}">Already have an account? Login</a>
+
 </body>
 </html>
