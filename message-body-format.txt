@@ -1,0 +1,9 @@
+Hello there!
+
+You have requested to change your password
+
+Your one time code is: {code}
+
+Best regard
+
+Some website

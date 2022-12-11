@@ -5,8 +5,10 @@ from argon2.exceptions import VerificationError
 from database import db, User, addusertodb
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from form import LoginForm, RegisterForm, ValidationError
-from flask_mail import Mail, Message
+#from flask_mail import Mail, Message
 import random
+from emails import sendemail, mail
+import pyotp
 
 
 ph = PasswordHasher(
@@ -47,8 +49,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-mail = Mail()
-
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
@@ -56,17 +56,12 @@ app.config['MAIL_USERNAME'] = "myflaskstuff@gmail.com"
 app.config['MAIL_PASSWORD'] = 'zvoaekcscurfozsp'
 mail.init_app(app)
 
-def sendemail():
-    msg = Message()
-    msg.subject = "Email Subject"
-    msg.recipients = ['bluefloyd12321@icloud.com']
-    msg.sender = 'username@gmail.com'
-    msg.body = 'Email body'
-    mail.send(msg)
-
 @app.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
-    sendemail()
+    totc = pyotp.TOTP('base32secret3232', interval=300)
+    otc = totc.now()
+    print(otc)
+    sendemail(otc)
     return 'test'
 
 @login_manager.user_loader
