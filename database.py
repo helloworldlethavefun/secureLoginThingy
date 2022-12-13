@@ -27,3 +27,11 @@ def addusertodb(email, password):
     user = User(email=email, password=password)
     db.session.add(user)
     db.session.commit()
+
+def commitnewpassword(email, new_password):
+    user = User.query.filter_by(email=email).first()
+    print(user.password)
+    user.password = new_password
+    print(user.password)
+    db.session.add(user)
+    db.session.commit()

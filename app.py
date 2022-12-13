@@ -2,21 +2,15 @@
 from flask import Flask, render_template, redirect, url_for, request, session, abort, flash
 from argon2 import PasswordHasher, Type
 from argon2.exceptions import VerificationError
-from database import db, User, addusertodb
+from database import db, User, addusertodb, commitnewpassword
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from form import LoginForm, RegisterForm, ResetPassword, ValidationError
+from form import LoginForm, RegisterForm, ResetPasswordEmail, ResetPassword, ValidationError
 import random
 from emails import sendemail, mail
 import pyotp
 
 totc = pyotp.TOTP('base32secret3232', interval=600)
 onetimecode = ''
-
-def addnewpassword(email, new_password):
-    user = User.query.filter_by(email=email).first()
-    user.password = new_password
-    print(user.password)
-
 
 def sendotp(user_email):
     global onetimecode
@@ -69,11 +63,6 @@ app.config['MAIL_USERNAME'] = "myflaskstuff@gmail.com"
 app.config['MAIL_PASSWORD'] = 'zvoaekcscurfozsp'
 mail.init_app(app)
 
-@app.route('/create-new-password', methods=['POST', 'GET'])
-def create_password():
-    form = RegisterForm()
-    return render_template('new-password.html', form=form)
-
 @app.route('/password-reset/<token>', methods=['POST', 'GET'])
 def reset_password(token):
     if current_user.is_authenticated:
@@ -81,19 +70,20 @@ def reset_password(token):
     user = User.verify_reset_password_token(token)
     if not user:
         return 'not user'
-    if user:
-        form = RegisterForm()
-        if form.validate_on_submit():
-            email = user.email
-            new_password = form.password.data
-            hashed_password = ph.hash(new_password)
-            addnewpassword(email, new_password)
-        return render_template('new-password.html', form=form)
+
+    form = ResetPassword()
+    if form.validate_on_submit():
+        email = user.email
+        new_password = form.password.data
+        hashed_password = ph.hash(new_password)
+        commitnewpassword(user.email, hashed_password)
+        return redirect(url_for('login'))
+    return render_template('new-password.html', form=form)
 
 # page for entering the user email to send the one time reset code
 @app.route('/reset-password-request', methods=['GET', 'POST'])
 def reset_password_request():
-    form = ResetPassword()
+    form = ResetPasswordEmail()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         print(user.email)
