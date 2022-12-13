@@ -18,3 +18,7 @@ class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Length(min=4, max=100)], render_kw={'placeholder': 'email'})
     password = PasswordField('password', validators=[InputRequired(), Length(min=4, max=100)], render_kw={'placeholder': 'password'})
     submit = SubmitField('Login')
+
+class ResetPassword(FlaskForm):
+    email = StringField('email', validators=[InputRequired(), Length(min=4, max=100)], render_kw={'placeholder': 'email'})
+    submit = SubmitField('Send reset code')

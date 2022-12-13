@@ -10,6 +10,7 @@
     <h1>Password reset!</h1>
     <p>Hello there!</p>
     <p>We recived a request to reset your Password</p>
-    <p>Your one time code is: {{ otc }}</p>
+    <p>Please click the link to reset your password</p>
+    {{ url_for('reset_password', token=token, _external=True) }}
 </body>
 </html>

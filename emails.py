@@ -3,14 +3,11 @@ from flask import render_template
 
 mail = Mail()
 
-def sendemail(otc):
-    with open('message-body-format.txt', 'r') as file:
-        email_body = file.read()
-        file.close()
+def sendemail(user):
+    token = user.get_user_reset_token()
     msg = Message()
     msg.subject = "Email Subject"
-    msg.recipients = ['bluefloyd12321@icloud.com']
+    msg.recipients = [user.email]
     msg.sender = 'username@gmail.com'
-    print(type(otc))
-    msg.html = render_template('email.html', otc=otc)
+    msg.html = render_template('email.html', token=token)
     mail.send(msg)
