@@ -23,6 +23,16 @@ class User(db.Model, UserMixin):
             return
         return User.query.get(id)
 
+class User_Files(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    file_name = db.Column(db.String(30), nullable=False, unique=True)
+    file_blob = db.Column(db.String(1000), nullable=False)
+
+def convertToBlob(file_path):
+    with open(file_path, 'rb') as file:
+        binary = file.read()
+    return binary
+
 def addusertodb(email, password):
     user = User(email=email, password=password)
     db.session.add(user)

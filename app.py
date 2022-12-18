@@ -1,21 +1,41 @@
 # import needed modules
-from flask import Flask, render_template, redirect, url_for, request, session, abort, flash
+from flask import (
+    Flask,
+    render_template,
+    redirect, url_for, 
+    request, 
+    session, 
+    abort, 
+    flash
+)
 from argon2 import PasswordHasher, Type
 from argon2.exceptions import VerificationError
 from database import db, User, addusertodb, commitnewpassword
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from form import LoginForm, RegisterForm, ResetPasswordEmail, ResetPassword, ValidationError
+from form import (
+     LoginForm, 
+     RegisterForm, 
+     ResetPasswordEmail, 
+     ResetPassword, 
+     ValidationError,
+     UploadForm
+)
 import random
 from emails import sendemail, mail
-import pyotp
+# import pyotp
+import os
 
-totc = pyotp.TOTP('base32secret3232', interval=600)
-onetimecode = ''
+# totc = pyotp.TOTP('base32secret3232', interval=600)
+# onetimecode = ''
 
+dir_path = 'users_files/'
+
+'''
 def sendotp(user_email):
     global onetimecode
     onetimecode = totc.now()
     sendemail(onetimecode, user_email)
+'''
 
 ph = PasswordHasher(
     memory_cost=65536,
@@ -102,11 +122,17 @@ def index():
     return render_template('index.html')
 
 # basic dashboard page, will work on later
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    print(current_user)
-    return render_template('dashboard.html')
+    upload_form = UploadForm()
+    user_id = str(current_user.id)
+    UPLOAD_PATH = 'users_files/' + user_id
+    if os.path.exists(UPLOAD_PATH) == False:
+        os.mkdir(UPLOAD_PATH)
+    if upload_form.validate_on_submit:
+        
+    return render_template('dashboard.html', form=upload_form)
 
 # logs the user out with the login manager
 @app.route('/logout')

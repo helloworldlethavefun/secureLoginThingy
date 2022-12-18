@@ -3,3 +3,4 @@ argon2
 flask_login
 flask_mail
 pyopt
+pyjwt

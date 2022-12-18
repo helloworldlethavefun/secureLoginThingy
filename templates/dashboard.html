@@ -8,7 +8,13 @@
     <title>Dashboard</title>
 </head>
 <body>
+    <a href="{{ url_for('index') }}">home</a>
     <h1>Welcome {{ current_user.name }}!</h1>
+    <form action="#" method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.file }}
+        {{ form.submit }}
+    </form>
     <a href="{{url_for('logout')}}">Click here to log out</a>
 </body>
 </html>

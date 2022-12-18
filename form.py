@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, FileField
 from wtforms.validators import InputRequired, Length, ValidationError
 from database import User
 
@@ -26,3 +26,7 @@ class ResetPasswordEmail(FlaskForm):
 class ResetPassword(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=4, max=100)], render_kw={'placeholder': 'password'})
     submit = SubmitField('Change password')
+
+class UploadForm(FlaskForm):
+    file = FileField(u'TestFile')
+    submit = SubmitField('Upload to MyDrive')
