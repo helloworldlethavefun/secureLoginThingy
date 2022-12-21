@@ -1,4 +1,6 @@
-# import needed modules
+# This impport modules and some other stuff from some of the files in this project.
+# The big imports are things like flask and flask_login and the other stuff is more from
+# things like form.py or database.py which has seperate imports in those files too.
 from flask import (
     Flask,
     render_template,
@@ -10,8 +12,13 @@ from flask import (
 )
 from argon2 import PasswordHasher, Type
 from argon2.exceptions import VerificationError
-from database import db, User, addusertodb, commitnewpassword
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from database import db, User, addusertodb, commitnewpassword, convertToBlob
+from flask_login import ( LoginManager, 
+    login_user, 
+    login_required, 
+    logout_user, 
+    current_user
+)
 from form import (
      LoginForm, 
      RegisterForm, 
@@ -24,6 +31,7 @@ import random
 from emails import sendemail, mail
 # import pyotp
 import os
+from werkzeug.utils import secure_filename
 
 # totc = pyotp.TOTP('base32secret3232', interval=600)
 # onetimecode = ''
@@ -121,18 +129,24 @@ def load_user(user_id):
 def index():
     return render_template('index.html')
 
-# basic dashboard page, will work on later
+# basic dashboard page, wip
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     upload_form = UploadForm()
     user_id = str(current_user.id)
-    UPLOAD_PATH = 'users_files/' + user_id
-    if os.path.exists(UPLOAD_PATH) == False:
-        os.mkdir(UPLOAD_PATH)
-    if upload_form.validate_on_submit:
-        
-    return render_template('dashboard.html', form=upload_form)
+    USER_PATH = 'users_files/' + user_id
+    USER_FILES = os.listdir(USER_PATH)
+    print(type(USER_FILES))
+    if os.path.exists(USER_PATH) == False:
+        os.mkdir(USER_PATH)
+    if upload_form.validate_on_submit():
+        file = upload_form.file.data
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(
+            USER_PATH, filename
+        ))
+    return render_template('dashboard.html', form=upload_form, list=USER_FILES)
 
 # logs the user out with the login manager
 @app.route('/logout')

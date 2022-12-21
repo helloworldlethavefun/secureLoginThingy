@@ -8,7 +8,8 @@ Written in python and uses login system as well.
 This is a flask application that utilizes flask login for the login system, flask mail
 for the password resetting and flaskwtf for the forms used on the webpages.
 Everything is stored in a sqlite3 database including the files and all passwords
-are hashed on entry so they are not stored in clear text. 
+are hashed on entry so they are not stored in clear text. The files are mostly seperate 
+to make it easier to work on individual parts but the bulk of it is handled in app.py.
 
 ## Requirements
 
@@ -17,11 +18,3 @@ are hashed on entry so they are not stored in clear text.
 - flask_mail
 - argon2
 - pyjwt
-
-## Todo
-
-### - Work on file upload
-
-- Secure file uploads
-- Extra work on security for anything else
-- Decorating

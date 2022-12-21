@@ -10,11 +10,17 @@
 <body>
     <a href="{{ url_for('index') }}">home</a>
     <h1>Welcome {{ current_user.name }}!</h1>
-    <form action="#" method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ form.file }}
-        {{ form.submit }}
+        <button type="submit">Upload</button>
     </form>
-    <a href="{{url_for('logout')}}">Click here to log out</a>
+    <a href="{{url_for('logout')}}">Click here to log out</a><br>
+    <h2>Here are you files</h2>
+    <ul>
+        {% for item in list %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
